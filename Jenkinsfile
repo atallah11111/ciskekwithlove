@@ -12,17 +12,18 @@ pipeline {
             }
         }
         stage('Build Docker Image') {
-            steps {
-                bat 'docker build -t %DOCKER_IMAGE% .'
-            }
-        }
-        stage('Run Container') {
-            steps {
-                bat 'docker rm -f react-container || exit 0'
-                bat 'docker run -d -p 3000:80 --name react-container %DOCKER_IMAGE%'
-            }
-        }
+    steps {
+        bat 'docker build -t %DOCKER_IMAGE% .'
     }
+}
+
+stage('Run Container') {
+    steps {
+        bat 'docker rm -f react-container || exit 0'
+        bat 'docker run -d -p 8081:8081 --name react-container %DOCKER_IMAGE%'
+    }
+}
+
     post {
         always {
             echo 'Pipeline finished.'
