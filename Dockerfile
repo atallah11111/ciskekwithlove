@@ -1,13 +1,21 @@
 # Build stage
-FROM node:22 AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+# Base image Node
+FROM node:22
 
-# Production stage
-FROM nginx:stable-alpine
-COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /app
+
+# Copy package.json & package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --network-timeout=100000
+
+# Copy source code
+COPY . .
+
+# Expose port Metro
+EXPOSE 8081
+
+# Start Metro bundler
+CMD ["npx", "react-native", "start", "--host", "0.0.0.0"]
+
