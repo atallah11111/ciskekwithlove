@@ -6,19 +6,20 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/atallah11111/ciskekwithlove.git'
+                git branch: 'main', 
+                    url: 'https://github.com/atallah11111/ciskekwithlove.git'
+                    // credentialsId: 'github-pat' // aktifkan jika repo private
             }
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                bat 'docker build -t %DOCKER_IMAGE% .'
             }
         }
         stage('Run Container') {
             steps {
-                // Stop existing container (optional)
-                sh 'docker rm -f react-container || true'
-                sh 'docker run -d -p 3000:80 --name react-container $DOCKER_IMAGE'
+                bat 'docker rm -f react-container || exit 0'
+                bat 'docker run -d -p 3000:80 --name react-container %DOCKER_IMAGE%'
             }
         }
     }
@@ -27,5 +28,4 @@ pipeline {
             echo 'Pipeline finished.'
         }
     }
-}'
-          
+}
